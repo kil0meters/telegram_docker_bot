@@ -39,9 +39,29 @@ def ps(bot, update):
                                   'Try adding your user ID `{}` to `ALLOWED_USERNAMES`.'.format(update.message.from_user.id),
                                   parse_mode='markdown')
 
+def containers(bot, update):
+    if update.message.from_user.id in allowed_users:
+        running_containers = docker.containers.list()
+
+        reply_text = '`ID              NAME            IMAGE               STATUS'
+        for container in running_containers:
+            reply_text += '\n{}    {}    {}    {}'.format(container.id[:12],
+                                                          container.name[:12].ljust(12),
+                                                          container.image.tags[0][:16].ljust(16),
+                                                          container.status)
+        reply_text += '`'
+
+        update.message.reply_text(reply_text,
+                                  parse_mode='markdown')
+    else:
+        update.message.reply_text('It looks like you aren\'t allowed to do that. '
+                                  'Try adding your user ID `{}` to `ALLOWED_USERNAMES`.'.format(update.message.from_user.id),
+                                  parse_mode='markdown')
+
 updater.dispatcher.add_handler(CommandHandler('start', help))
 updater.dispatcher.add_handler(CommandHandler('help', help))
 updater.dispatcher.add_handler(CommandHandler('ps', ps))
+updater.dispatcher.add_handler(CommandHandler('containers', containers))
 
 print("Starting bot")
 
