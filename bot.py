@@ -1,6 +1,7 @@
 import os, logging
 
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, RegexHandler
+from telegram import ReplyKeyboardMarkup
 import docker as docker_api
 
 bot_token = os.environ['BOT_TOKEN']
@@ -20,6 +21,32 @@ def help(bot, update):
 
     update.message.reply_text(reply_text,
                               parse_mode='markdown')
+
+def info(bot, update):
+    if update.message.from_user.id in allowed_users:
+        containers = docker.containers.list()
+
+        rows = []
+        for container in containers:
+            rows.append([container.id[:12] + ' - ' + container.name])
+
+        keyboard = ReplyKeyboardMarkup(rows, resize_keyboard=True, one_time_keyboard=True)
+        bot.send_message(chat_id=update.message.chat_id, text="Select a container", reply_markup=keyboard)
+    else:
+        update.message.reply_text('It looks like you aren\'t allowed to do that. '
+                                  'Try adding your user ID `{}` to `ALLOWED_USERNAMES`.'.format(update.message.from_user.id),
+                                  parse_mode='markdown')
+
+'''
+def info_callback(bot, message):
+    if update.message.from_user.id in allowed_users:
+        print('hello')
+        update.message.reply_text('getting info')
+    else:
+        update.message.reply_text('It looks like you aren\'t allowed to do that. '
+                                  'Try adding your user ID `{}` to `ALLOWED_USERNAMES`.'.format(update.message.from_user.id),
+                                  parse_mode='markdown')
+'''
 
 def ps(bot, update):
     if update.message.from_user.id in allowed_users:
@@ -91,9 +118,12 @@ def images(bot, update):
 
 updater.dispatcher.add_handler(CommandHandler('start', help))
 updater.dispatcher.add_handler(CommandHandler('help', help))
+updater.dispatcher.add_handler(CommandHandler('info', info))
 updater.dispatcher.add_handler(CommandHandler('ps', ps))
 updater.dispatcher.add_handler(CommandHandler('containers', containers))
 updater.dispatcher.add_handler(CommandHandler('images', images))
+
+# updater.dispatcher.add_handler(RegexHandler('[a-f0-9]{12} - [a-zA-Z0-9_]+', info_callback))
 
 print("Starting bot")
 
