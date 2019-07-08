@@ -1,5 +1,4 @@
 help            - Lists bot commands
-status          - Shows machine resource usage
 info            - Displays information about a given image or container
 ps              - Displays running docker containers
 containers      - Lists containers
