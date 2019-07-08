@@ -1,0 +1,7 @@
+help            - Lists bot commands
+status          - Shows machine resource usage
+ps              - Displays running docker containers
+containers      - Lists containers
+images          - Lists images
+start_container - Starts a stopped container
+stop_container  - Stops a running container
