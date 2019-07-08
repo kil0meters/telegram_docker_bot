@@ -10,7 +10,7 @@ Via docker:
 docker run \
   --name=telegram_docker_bot \
   -e BOT_TOKEN=<Token from @BotFather> \
-  -e AUTHORIZED_USERS=<Comma separated list of user IDs>
+  -e ALLOWED_USERS=<Comma separated list of user IDs>
   -v /var/run/docker.sock:/var/run/docker.sock \
   --restart unless-stopped \
   kil0meters/telegram_docker_bot
@@ -26,7 +26,7 @@ services:
     container_name: "telegram_docker_bot"
     environment:
       BOT_TOKEN: "" # Token from @BotFather
-      AUTHORIZED_USERS: "" # Comma separated list of user ID's
+      ALLOWED_USERS: "" # Comma separated list of user ID's
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     restart: "unless-stopped"
